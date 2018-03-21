@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Домашняя работа 5 задание 1</title>
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+
+<script>
+    "use strict";
+
+    // language=ECMAScript 6
+    /*
+        1. Создать функцию, генерирующую шахматную доску. При этом можно использовать любые html-теги по своему желанию.
+        Доска должна быть разлинована соответствующим образом, т.е. чередовать черные и белые ячейки.
+        Строки должны нумероваться числами от 1 до 8, столбцы – латинскими буквами A, B, C, D, E, F, G, H.
+
+        2. Заполнить созданную таблицу фигурами, фигуры должны выглядеть как картинки,
+         либо можно использовать символы (существуют символы шахматных фигур) причем все фигуры должны стоять
+         на своих местах и быть соответственно черными и белыми.
+     */
+
+    /**
+     * Функция создает HTML элемент и вставляет его в документ
+     */
+    function Elem(teg){
+        this.teg = teg;
+        let e = document.createElement(this.teg);
+        this.documentInsert = function(parr){
+            return this.elem = parr.appendChild(e);
+        }
+    }
+
+    /**
+     * Настройки достки
+     */
+    function setChess(i, j, fig) {
+        chessBoard.fig[j] = new Elem('img');
+        chessBoard.fig[j].documentInsert(chessBoard.cell[i].elem.children[j]);
+        chessBoard.fig[j].elem.setAttribute('alt', fig.name);
+        if ((i===0)||(i===1)) {
+            chessBoard.fig[j].elem.setAttribute('src', fig.src_b)
+        } else if ((i===6)||(i===7)) {
+            chessBoard.fig[j].elem.setAttribute('src', fig.src_w);
+        }
+    }
+    let chessBoard = {
+        cell: [],
+        col: [],
+        fig: [],
+        lines: ['8', '7', '6', '5', '4', '3', '2', '1', ' '],
+        columns: [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    };
+
+    /**
+     * Фигуры
+     */
+    let figure = {
+        king: {
+            name: 'Король',
+            src_w: 'img/white-king.png',
+            src_b: 'img/black-king.png'
+        },
+        queen: {
+            name: 'Королева',
+            src_w: 'img/white-queen.png',
+            src_b: 'img/black-queen.png'
+        },
+        ladya: {
+            name: 'Ладья',
+            src_w: 'img/white-ladya.png',
+            src_b: 'img/black-ladya.png'
+        },
+        elefant: {
+            name: 'Слон',
+            src_w: 'img/white-elephant.png',
+            src_b: 'img/black-elephant.png'
+        },
+        horse: {
+            name: 'Конь',
+            src_w: 'img/white-horse.png',
+            src_b: 'img/black-horse.png'
+        },
+        peshka: {
+            name: 'Пешка',
+            src_w: 'img/white-peshka.png',
+            src_b: 'img/black-peshka.png'
+        }
+    };
+
+    /**
+     * Добавим таблицу с классом doska
+     */
+    let tableChess = new Elem('table');
+    tableChess.documentInsert(document.body);
+    tableChess.elem.classList = 'doska';
+
+
+    /**
+     * Выводим строки и столбцы
+     */
+    for (let i=0; i<9; i++) {
+        chessBoard.cell[i] = new Elem('tr');
+        chessBoard.cell[i].documentInsert(tableChess.elem);  // Строки
+
+        for (let j=0; j<9; j++) {
+            chessBoard.col[j] = new Elem('td');
+            chessBoard.col[j].documentInsert(chessBoard.cell[i].elem); // Колонки
+            chessBoard.col[j].elem.classList = 'cell';
+
+            if ((i===1 && j!==0) || (i===6 && j!==0)) setChess(i, j, figure.peshka); //Позиция пешки
+            if (((i===0 && j===2)||(i===0 && j===7)) || ((i===7 && j===2)||(i===7 && j===7))) setChess(i, j, figure.horse); //Позиция коней
+            if (((i===0 && j===3)||(i===0 && j===6)) || ((i===7 && j===3)||(i===7 && j===6))) setChess(i, j, figure.elefant); //Позиция слонов
+            if (((i===7 && j===1)||(i===7 && j===8)) || ((i===0 && j===1)||(i===0 && j===8))) setChess(i, j, figure.ladya); //Позиция ладей
+            if ((i===0 && j===4) || (i===7 && j===4)) setChess(i, j, figure.queen); //Позиция королев
+            if ((i===0 && j===5) || (i===7 && j===5)) setChess(i, j, figure.king); //Позиция королей
+
+
+            if (i===8) {
+                chessBoard.col[j].elem.innerHTML = chessBoard.columns[j]; // Вставить строку с буквами внизу после 8й строки
+                chessBoard.col[j].elem.classList.add('bottom-lines');
+            }
+            if ((i!==8 && i%2===0 && j%2===0 && j!==0)||(i%2!==0 && j%2!==0 && j!==0)) chessBoard.col[j].elem.classList.add('black'); // Добавить класс black к td
+        }
+        chessBoard.col[0].elem.innerHTML = chessBoard.lines[i]; // Вставить колонки с числами слева
+        chessBoard.col[0].elem.classList.add('left-columns');
+    }
+
+
+
+</script>
+
+
+</body>
+</html>
